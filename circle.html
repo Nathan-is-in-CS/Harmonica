@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive Circle of Fifths - Explore musical key relationships with sound">
+    <title>The Circle of Fifths: A Complete Guide</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        :root {
+              --major: #b22222; /* red for major */
+              --minor: #228b22; /* green for minor */
+              --quiz: #ffe082;
+        }
+        .circle-container {
+            padding: 3rem 1rem;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E8E9F3 100%);
+        }
+
+        .edu-section {
+            background: #fff;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+            margin: 2rem auto;
+            padding: 2.5rem 2rem;
+            max-width: 800px;
+            width: 100%;
+        }
+        .edu-section h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        .edu-section h3 {
+            color: var(--secondary);
+            margin-top: 2rem;
+            font-size: 1.3rem;
+        }
+        .edu-section p, .edu-section li {
+            color: var(--neutral-dark);
+            font-size: 1.15rem;
+            line-height: 1.7;
+        }
+        .edu-section ul {
+            margin-left: 1.5rem;
+        }
+        .circle-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem 0;
+        }
+        .circle-svg {
+            width: 350px;
+            height: 350px;
+            max-width: 90vw;
+            margin-bottom: 1rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .major-label {
+            fill: var(--major);
+            font-weight: bold;
+        }
+        .minor-label {
+            fill: var(--minor);
+            font-weight: bold;
+        }
+        .quiz-box {
+            background: var(--quiz);
+            border-radius: 1rem;
+            padding: 2.25rem 2rem 2rem 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-sizing: border-box;
+        }
+    </style>
+    <style>
+        .quiz-box ol {
+            margin-left: 1.5rem;
+            margin-right: 1rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        .quiz-box li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .quiz-box h4 {
+            margin-bottom: 1rem;
+        }
+        .glossary {
+            background: #f3f6fa;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        .glossary dt {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        .glossary dd {
+            margin-bottom: 1rem;
+            margin-left: 0;
+        }
+
+        .circle-intro {
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 2rem;
+        }
+
+        .circle-intro h1 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .circle-intro p {
+            color: var(--neutral-dark);
+            opacity: 0.8;
+            font-size: 1.125rem;
+        }
+
+        .circle-wrapper {
+            position: relative;
+            width: 90vmin;
+            height: 90vmin;
+            max-width: 600px;
+            max-height: 600px;
+            margin: 2rem auto;
+        }
+
+        /* Remove the transform that rotates the SVG by -90deg */
+        .circle-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .key-segment {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .key-segment:hover {
+            opacity: 0.8;
+            filter: brightness(1.1);
+        }
+
+        .key-segment:focus {
+            outline: 3px solid var(--accent);
+            outline-offset: -3px;
+        }
+
+        .key-segment.active {
+            filter: brightness(1.2) drop-shadow(0 0 10px currentColor);
+        }
+
+        .key-label {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.25rem;
+            fill: white;
+            pointer-events: none;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .minor-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .center-circle {
+            fill: var(--primary);
+            filter: drop-shadow(0 4px 15px rgba(108, 99, 255, 0.4));
+        }
+
+        .center-text {
+            fill: white;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .info-panel {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .info-panel h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .info-panel .key-name {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin: 1rem 0;
+        }
+
+        .info-panel .key-details {
+            color: var(--neutral-dark);
+            opacity: 0.8;
+            line-height: 1.8;
+        }
+
+        .play-chord-btn {
+            margin-top: 1.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1.125rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .play-chord-btn:hover,
+        .play-chord-btn:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        .instructions {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(108, 99, 255, 0.1);
+            border-radius: 0.5rem;
+            max-width: 600px;
+        }
+
+        .instructions p {
+            color: var(--neutral-dark);
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .circle-wrapper {
+                width: 85vmin;
+                height: 85vmin;
+            }
+
+            .key-label {
+                font-size: 1rem;
+            }
+
+            .minor-label {
+                font-size: 0.875rem;
+            }
+
+            .info-panel .key-name {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <img src="images/logo.png" alt="Harmonica Logo" class="logo">
+                <span class="brand-name">Harmonica</span>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="hamburger"></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="home.html" class="nav-link">Home</a></li>
+                <li><a href="circle.html" class="nav-link active">Circle of Fifths</a></li>
+                <li><a href="piano.html" class="nav-link">Piano</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="circle-container" aria-label="Circle of Fifths Educational Guide">
+        <section class="edu-section" aria-labelledby="intro-title">
+            <h1 id="intro-title">The Circle of Fifths: Your Guide to Musical Keys</h1>
+            <p>The <strong>Circle of Fifths</strong> is one of music’s most powerful tools. It shows how all 12 notes and keys in music are connected, making it easier to understand, play, and write music. Whether you’re a beginner or a pro, this guide will help you unlock the secrets of the circle!</p>
+        </section>
+
+        <section class="edu-section" aria-labelledby="what-is-circle">
+            <h2 id="what-is-circle">What is the Circle of Fifths?</h2>
+            <p>The Circle of Fifths is a diagram that arranges the 12 notes of the chromatic scale in a circle. Each step around the circle moves up by a musical interval called a <strong>fifth</strong>. It helps musicians see which keys are related, how sharps and flats work, and how to change keys smoothly.</p>
+                <div class="circle-diagram">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/Circle_of_fifths_deluxe_4.svg" alt="Circle of Fifths diagram showing all major and minor keys, with key signatures and enharmonic equivalents. By Just plain Bill, CC BY-SA 3.0, via Wikimedia Commons." style="max-width: 100%; height: auto; border-radius: 1rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1rem;" />
+                                <p style="font-size:1rem; color:#555;">Major keys = <span style="color:var(--major);font-weight:bold;">warm colors</span> | Minor keys = <span style="color:var(--minor);font-weight:bold;">cool colors</span></p>
+                                   <!-- Updated color legend to match image -->
+                                   <p style="font-size:1rem; color:#555; margin-top:0.25rem;">In this diagram: <span style="color:var(--major);font-weight:bold;">Major keys = red</span> | <span style="color:var(--minor);font-weight:bold;">Minor keys = green</span></p>
+                                <p style="font-size:0.95rem; color:#888; margin-top:0.5rem;">
+                                    <a href="https://commons.wikimedia.org/wiki/File:Circle_of_fifths_deluxe_4.svg" target="_blank" rel="noopener">Just plain Bill</a>,
+                                    <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>,
+                                    via Wikimedia Commons
+                                </p>
+            </div>
+        </section>
+
+        <section class="edu-section" aria-labelledby="understanding-keys">
+            <h2 id="understanding-keys">Understanding Keys &amp; Intervals</h2>
+            <ul>
+                <li><strong>What is a key?</strong> A <em>key</em> is a group of notes that sound good together. Each key has a “home” note (the tonic).</li>
+                <li><strong>What is a fifth?</strong> A <em>fifth</em> is the distance between one note and the note five steps higher. For example, from C up to G is a fifth.</li>
+                <li><strong>Major vs. Minor:</strong> <span style="color:var(--major);font-weight:bold;">Major keys</span> sound bright and happy. <span style="color:var(--minor);font-weight:bold;">Minor keys</span> sound more mellow or sad.</li>
+            </ul>
+        </section>
+
+        <section class="edu-section" aria-labelledby="how-to-read">
+            <h2 id="how-to-read">How to Read the Circle of Fifths</h2>
+            <ol>
+                <li>Start at the top: <strong>C Major</strong> (no sharps or flats).</li>
+                <li>Move clockwise: Each step adds a sharp. (G, D, A, E, B, F♯)</li>
+                <li>Move counterclockwise: Each step adds a flat. (F, B♭, E♭, A♭, D♭, G♭)</li>
+                <li>Inner circle: Shows the <span style="color:var(--minor);font-weight:bold;">relative minor</span> for each major key.</li>
+            </ol>
+            <p>Keys next to each other are closely related and sound good together!</p>
+        </section>
+
+        <section class="edu-section" aria-labelledby="major-minor">
+            <h2 id="major-minor">Major &amp; Minor Keys: How They Relate</h2>
+            <p>Every major key has a <strong>relative minor</strong> key that shares the same notes. For example, C Major and A minor use the same notes but start on different tonics.</p>
+            <ul>
+                <li><strong>Relative minor:</strong> Find the minor key inside the circle, just below the major key.</li>
+                <li><strong>Parallel minor:</strong> Has the same tonic note, but different notes (C Major &rarr; C minor).</li>
+            </ul>
+        </section>
+
+        <section class="edu-section" aria-labelledby="sharps-flats">
+            <h2 id="sharps-flats">Sharps &amp; Flats Around the Circle</h2>
+            <ul>
+                <li>Each step clockwise adds a <strong>sharp (#)</strong> to the key signature.</li>
+                <li>Each step counterclockwise adds a <strong>flat (♭)</strong>.</li>
+                <li>Opposite sides of the circle are the most different (C Major vs. F♯ Major).</li>
+            </ul>
+            <p>Example: G Major has 1 sharp (F#), D Major has 2 sharps (F#, C#), and so on.</p>
+        </section>
+
+        <section class="edu-section" aria-labelledby="applications">
+            <h2 id="applications">How to Use the Circle in Real Music</h2>
+            <h3>Transposing Songs</h3>
+            <p>Want to play a song in a different key? Move the chords around the circle by the same number of steps.</p>
+            <h3>Writing Chord Progressions</h3>
+            <p>Chords next to each other on the circle sound great together. Try C &rarr; G &rarr; Am &rarr; F (used in many pop songs!).</p>
+            <h3>Improvising &amp; Harmonizing</h3>
+            <p>Use the circle to find which keys and chords fit together for solos or harmonies.</p>
+            <h3>Famous Example</h3>
+            <ul>
+                <li><strong>Let It Be</strong> (The Beatles): C &rarr; G &rarr; Am &rarr; F</li>
+                <li><strong>Canon in D</strong> (Pachelbel): D &rarr; A &rarr; Bm &rarr; F#m &rarr; G &rarr; D &rarr; G &rarr; A</li>
+            </ul>
+        </section>
+
+        <section class="edu-section quiz-box" aria-labelledby="quiz-title">
+            <h2 id="quiz-title">Quick Quiz: Test Your Knowledge!</h2>
+            <ol>
+                <li>What key has 2 sharps?</li>
+                <li>What is the relative minor of C Major?</li>
+                <li>If you move 3 steps clockwise from C, what key do you land on?</li>
+            </ol>
+            <details>
+                <summary><strong>Show Answers</strong></summary>
+                <ol>
+                    <li>D Major</li>
+                    <li>A minor</li>
+                    <li>E Major</li>
+                </ol>
+            </details>
+        </section>
+
+        <section class="edu-section glossary" aria-labelledby="glossary-title">
+            <h2 id="glossary-title">Glossary &amp; Resources</h2>
+            <dl>
+                <dt>Key</dt>
+                <dd>A group of notes that form the basis of a piece of music.</dd>
+                <dt>Fifth</dt>
+                <dd>The interval between one note and the note five steps higher.</dd>
+                <dt>Relative Minor</dt>
+                <dd>The minor key that shares the same key signature as a major key.</dd>
+                <dt>Transposing</dt>
+                <dd>Changing the key of a song or piece of music.</dd>
+            </dl>
+            <p>Want to learn more? Check out <a href="https://www.musictheory.net/lessons/30" target="_blank" rel="noopener">MusicTheory.net: Circle of Fifths</a> or <a href="https://en.wikipedia.org/wiki/Circle_of_fifths" target="_blank" rel="noopener">Wikipedia: Circle of Fifths</a>.</p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content" style="display:flex; flex-direction:column; align-items:center;">
+                <!-- Removed logo and tagline for cleaner footer -->
+                <div class="footer-links" style="display:flex; gap:3rem; justify-content:center; flex-wrap:wrap;">
+                    <div class="footer-column">
+                        <h4 class="footer-heading">Explore</h4>
+                        <ul class="footer-list">
+                            <li><a href="circle.html" class="footer-link">Circle of Fifths</a></li>
+                            <li><a href="piano.html" class="footer-link">Virtual Piano</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4 class="footer-heading">About</h4>
+                        <ul class="footer-list">
+                            <li><a href="about.html" class="footer-link">About Us</a></li>
+                            <li><a href="about.html#contact" class="footer-link">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4 class="footer-heading">More Resources</h4>
+                        <ul class="footer-list" style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5em 2em; list-style:none; padding:0; margin:0;">
+                            <li style="text-align:left;"><a href="https://www.musictheory.net/lessons/30" target="_blank" rel="noopener" class="footer-link">MusicTheory.net: Circle of Fifths</a></li>
+                            <li style="text-align:left;"><a href="https://en.wikipedia.org/wiki/Circle_of_fifths" target="_blank" rel="noopener" class="footer-link">Wikipedia: Circle of Fifths</a></li>
+                            <li style="text-align:left;"><a href="https://www.libertyparkmusic.com/circle-of-fifths/" target="_blank" rel="noopener" class="footer-link">Liberty Park Music: Circle of Fifths</a></li>
+                            <li style="text-align:left;"><a href="https://www.youtube.com/watch?v=0m6smQk0K1k" target="_blank" rel="noopener" class="footer-link">YouTube: Circle of Fifths Explained</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Harmonica. All rights reserved.
+                    <a href="https://github.com/Nathan-is-in-CS/Harmonica" class="footer-link" target="_blank" rel="noopener" style="vertical-align:middle; margin-left:0.5em;">
+                        <img src="images/github-mark-white.svg" alt="GitHub Repository" style="height:1.5em; width:1.5em; vertical-align:middle; margin-right:0.3em;">GitHub Repo
+                    </a>
+                    <a href="https://www.musicca.com/" class="footer-link" target="_blank" rel="noopener" style="margin-left:1em;">Inspired by Musicca</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- No interactive scripts needed for educational version -->
+</body>
+</html>
