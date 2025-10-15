@@ -5,6 +5,58 @@
  */
 
 // ===================================
+// Hamburger Menu Toggle (Responsive Nav)
+// ===================================
+document.addEventListener('DOMContentLoaded', function() {
+    const navToggle = document.querySelector('.nav-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (navToggle && navMenu) {
+        // Toggle menu on button click
+        navToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+            
+            // Toggle states
+            navToggle.setAttribute('aria-expanded', !isExpanded);
+            navMenu.classList.toggle('active');
+            navToggle.classList.toggle('open');
+            
+            console.log('Menu toggled:', navMenu.classList.contains('active'));
+        });
+        
+        // Close menu when clicking a nav link
+        const navLinks = navMenu.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navMenu.classList.remove('active');
+                navToggle.setAttribute('aria-expanded', 'false');
+                navToggle.classList.remove('open');
+            });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                navMenu.classList.remove('active');
+                navToggle.setAttribute('aria-expanded', 'false');
+                navToggle.classList.remove('open');
+            }
+        });
+        
+        // Close menu on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                navToggle.setAttribute('aria-expanded', 'false');
+                navToggle.classList.remove('open');
+                navToggle.focus();
+            }
+        });
+    }
+});
+
+// ===================================
 // Audio Context Setup
 // ===================================
 let audioContext = null;
@@ -98,39 +150,6 @@ function playChord(notes, octave = 4, duration = 1.0) {
 }
 
 // ===================================
-// Mobile Navigation Toggle
-// ===================================
-document.addEventListener('DOMContentLoaded', () => {
-    const navToggle = document.querySelector('.nav-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-    
-    if (navToggle && navMenu) {
-        navToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            const isExpanded = navMenu.classList.contains('active');
-            navToggle.setAttribute('aria-expanded', isExpanded);
-        });
-        
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                navMenu.classList.remove('active');
-                navToggle.setAttribute('aria-expanded', 'false');
-            }
-        });
-        
-        // Close menu on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-                navMenu.classList.remove('active');
-                navToggle.setAttribute('aria-expanded', 'false');
-                navToggle.focus();
-            }
-        });
-    }
-});
-
-// ===================================
 // Smooth Scroll Enhancement
 // ===================================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -150,7 +169,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Active Navigation Link Highlighting
 // ===================================
 function updateActiveNavLink() {
-    const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     const navLinks = document.querySelectorAll('.nav-link');
     
     navLinks.forEach(link => {

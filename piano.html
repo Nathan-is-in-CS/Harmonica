@@ -208,51 +208,34 @@
             font-size: 0.875rem;
         }
 
-        @media (max-width: 768px) {
-            .piano {
-                height: 180px;
-            }
+@media (max-width: 768px) {
+        .piano {
+            /* This makes the container scrollable horizontally */
+            overflow-x: auto;
+            overflow-y: hidden;
 
-            .piano-keys {
-                width: 540px;
-            }
-
-            .white-key {
-                width: 36px;
-                height: 180px;
-            }
-
-            .black-key {
-                width: 22px;
-                height: 110px;
-            }
-
-            .key-label {
-                font-size: 0.85rem;
-            }
-
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .control-group {
-                justify-content: space-between;
-            }
+            /* Bonus: Nicer scrolling experience on touch devices */
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
         }
 
-        @media (max-width: 480px) {
-            .piano-keys {
-                width: 270px;
-            }
-            .white-key {
-                width: 18px;
-            }
-
-            .black-key {
-                width: 10px;
-            }
+        /* Bonus: Custom scrollbar style for a cleaner look */
+        .piano::-webkit-scrollbar {
+            height: 8px;
         }
+        .piano::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 10px;
+        }
+
+        .piano-keys {
+            /* This is the key fix: it allows the piano keys container
+               to be as wide as the JavaScript calculates, removing the
+               screen-width limit. */
+            max-width: none;
+        }
+    }
     </style>
 </head>
 <body>
@@ -283,11 +266,11 @@
             <div class="controls">
                 <div class="control-group">
                     <label for="octaveSelect">Octave:</label>
-                    <select id="octaveSelect" aria-label="Octave select">
-                        <option value="3">3</option>
-                        <option value="4" selected>4</option>
-                        <option value="5">5</option>
-                    </select>
+                        <select id="octaveSelect" aria-label="Octave select">
+                            <option value="3" selected>3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
                 </div>
                 <div class="control-group">
                     <label for="waveSelect">Wave Type:</label>
